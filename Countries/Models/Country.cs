@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Countries.Modelos
 {
-    class RootObject
+    public class Country
     {
         public string name { get; set; }
         public List<string> topLevelDomain { get; set; }
@@ -20,8 +20,8 @@ namespace Countries.Modelos
         public int population { get; set; }
         public List<double> latlng { get; set; }
         public string demonym { get; set; }
-        public double area { get; set; }
-        public double gini { get; set; }
+        public double ? area { get; set; }
+        public double ? gini { get; set; }
         public List<string> timezones { get; set; }
         public List<string> borders { get; set; }
         public string nativeName { get; set; }
@@ -32,5 +32,14 @@ namespace Countries.Modelos
         public string flag { get; set; }
         public List<RegionalBloc> regionalBlocs { get; set; }
         public string cioc { get; set; }
+
+
+        //public override string ToString()    //fazer override ou DisplayMember na ComboBox
+        //{
+        //    return $"{name}";
+        //}
+
     }
+
+
 }

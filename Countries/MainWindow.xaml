@@ -5,11 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Countries"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1200" Width="1200">
-    <Grid Margin="0,0,0,-3" >
-        <Button Content="Button" HorizontalAlignment="Left" Margin="700,92,0,0" VerticalAlignment="Top" Width="173" Height="72"/>
-        <ComboBox x:Name="cb_flag" HorizontalAlignment="Left" Margin="173,246,0,0" VerticalAlignment="Top" Width="269" Height="27"/>
-        <ListBox HorizontalAlignment="Left" Height="50" Margin="190,92,0,0" VerticalAlignment="Top" Width="288"/>
-        
+        Title="MainWindow" Height="800" Width="1200">
+    <Grid Margin="0,0,2,-21" >
+        <Button Content="Button" HorizontalAlignment="Left" Margin="916,70,0,0" VerticalAlignment="Top" Width="170" Height="72"/>
+        <ComboBox x:Name="cb_flag" HorizontalAlignment="Left" Margin="345,70,0,0" VerticalAlignment="Top" Width="378" Height="40"/>
+        <ListBox x:Name="lb_countries" HorizontalAlignment="Left" Height="452" Margin="104,196,0,0" VerticalAlignment="Top" Width="294" SelectionChanged="lb_countries_SelectionChanged"/>
+        <Label Content="Capital" HorizontalAlignment="Left" Margin="470,366,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.489,0.577" Width="108" FontSize="21" Height="41"/>
+        <Label Content="Region" HorizontalAlignment="Left" Margin="470,412,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.489,0.577" Width="82" FontSize="21" Height="45"/>
+        <Label Content="Sub Region" HorizontalAlignment="Left" Margin="470,462,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.489,0.577" Width="127" FontSize="21" Height="43"/>
+        <Label Content="Population" HorizontalAlignment="Left" Margin="470,510,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.489,0.577" Width="108" Height="38" FontSize="21"/>
+        <Label x:Name="lbl_capital" Content="cp" HorizontalAlignment="Left" Margin="615,366,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.489,0.577" Width="267" FontSize="21" Height="41"/>
+        <Label x:Name="lbl_region" Content="rg" HorizontalAlignment="Left" Margin="615,407,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.489,0.577" Width="267" FontSize="21" Height="41"/>
+        <Label x:Name="lbl_subregion" Content="sr" HorizontalAlignment="Left" Margin="615,462,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.495,0.537" Width="323" FontSize="21" Height="41"/>
+        <Label x:Name="lbl_population" Content="pp" HorizontalAlignment="Left" Margin="615,510,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Width="175" FontSize="21" Height="41"/>
+        <Image x:Name="img_flag" HorizontalAlignment="Left" Height="72" Margin="532,176,0,0" VerticalAlignment="Top" Width="145"/>
+
     </Grid>
 </Window>
