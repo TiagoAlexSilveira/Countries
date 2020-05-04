@@ -1,11 +1,16 @@
 ﻿using Countries.Modelos;
 using Countries.Services;
 using Countries.Serviços;
+using Microsoft.Win32;
 using Newtonsoft.Json;
+using NReco.ImageGenerator;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Runtime.Remoting;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -41,6 +46,9 @@ namespace Countries
             apiService = new ApiService();
             dialogService = new DialogService();
             LoadCountries();
+            SaveFlagASync(country_);
+
+
         }
 
         private async void LoadCountries()
@@ -75,9 +83,38 @@ namespace Countries
         public async Task SaveFlagASync(List<Country> countries)
         {
 
-            //a implementar...
+            //WebClient client = new WebClient();
 
+            //foreach (Country country in country_)
+            //{
+            //    client.DownloadFile(new Uri(country.flag), "C:\\Users\\Tiago\\source\\repos\\Countries\\Countries\\FlagsImg");
+            //}
+
+            using(WebClient client = new WebClient())
+            {
+                NReco.ImageGenerator.HtmlToImageConverter ConvImg = new NReco.ImageGenerator.HtmlToImageConverter();
+
+                foreach (Country country in country_)
+                {
+                    client.DownloadFile(new Uri(country.flag), $"C:\\Users\\Tiago\\source\\repos\\Countries\\Countries\\FlagsImg\\{country.name}.jpg)");
+                    client.DownloadFile(country.flag, $"C:\\Users\\Tiago\\source\\repos\\Countries\\Countries\\FlagsImg\\{country.name}.svg");
+
+                    ConvImg.Width = 440;
+                    ConvImg.Height = 320;
+                    var FlagImage = ConvImg.GenerateImageFromFile(country.flag, ImageFormat.Jpeg);
+
+                    using (var stream = new System.IO.MemoryStream(FlagImage, 0, FlagImage.Length))
+                    {
+                        Bitmap bm = new Bitmap(System.Drawing.Image.FromStream(stream));
+                        bm.Save(country.name, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    }
+                }
+            }           
         }
+
+
+
+
 
         private void lb_countries_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
