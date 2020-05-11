@@ -4,9 +4,11 @@ using Countries.Serviços;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using NReco.ImageGenerator;
+using Svg;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -30,7 +32,7 @@ namespace Countries
     /// </summary>
     public partial class MainWindow : Window
     {
-        private List<Country> country_;  //só precisamos da referência da Lista(só é utilizada uma vez)        
+        private List<Country> paises;  //só precisamos da referência da Lista(só é utilizada uma vez)        
 
         private NetworkService networkService;
 
@@ -46,23 +48,18 @@ namespace Countries
             apiService = new ApiService();
             dialogService = new DialogService();
             LoadCountries();
-            SaveFlagASync(country_);
-
-
+            this.DataContext = lb_countries;
         }
 
         private async void LoadCountries()
         {
-            var connection = networkService.CheckConnection(); //faz a conexão à net
+            await LoadApiCountries();
+            lb_countries.ItemsSource = paises;
+            lb_countries.DisplayMemberPath = "name";
+            await SaveFlagASync(paises);
+            await ConvertSvgAsync();
 
-            if (!connection.IsSucess)
-            {
-                //Load Local Database se não tiver net carregamos a base de dados local
-            }
-            else
-            {
-                await LoadApiCountries();
-            }
+            //MessageBox.Show(paises.Count.ToString());
         }
 
 
@@ -71,73 +68,111 @@ namespace Countries
         {
             var response = await apiService.GetCountries("http://restcountries.eu", "/rest/v2/all");
 
-            country_ = (List<Country>)response.Result;
-            MessageBox.Show(country_.Count.ToString());
-
-            foreach (Country country in country_)
-            {
-                lb_countries.Items.Add(country.name);
-            }
+            paises = (List<Country>)response.Result;
         }
+
 
         public async Task SaveFlagASync(List<Country> countries)
         {
+            DirectoryInfo path = new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent;
 
-            //WebClient client = new WebClient();
+            List<Task> tasks = new List<Task>();
 
-            //foreach (Country country in country_)
-            //{
-            //    client.DownloadFile(new Uri(country.flag), "C:\\Users\\Tiago\\source\\repos\\Countries\\Countries\\FlagsImg");
-            //}
-
-            using(WebClient client = new WebClient())
+            if (!Directory.Exists(path.FullName + @"\FlagsImg\"))
             {
-                NReco.ImageGenerator.HtmlToImageConverter ConvImg = new NReco.ImageGenerator.HtmlToImageConverter();
+                Directory.CreateDirectory(path.FullName + @"\FlagsImg\");
+            }
 
-                foreach (Country country in country_)
-                {
-                    client.DownloadFile(new Uri(country.flag), $"C:\\Users\\Tiago\\source\\repos\\Countries\\Countries\\FlagsImg\\{country.name}.jpg)");
-                    client.DownloadFile(country.flag, $"C:\\Users\\Tiago\\source\\repos\\Countries\\Countries\\FlagsImg\\{country.name}.svg");
+            string FullPath = path.FullName + @"\FlagsImg\";
 
-                    ConvImg.Width = 440;
-                    ConvImg.Height = 320;
-                    var FlagImage = ConvImg.GenerateImageFromFile(country.flag, ImageFormat.Jpeg);
-
-                    using (var stream = new System.IO.MemoryStream(FlagImage, 0, FlagImage.Length))
-                    {
-                        Bitmap bm = new Bitmap(System.Drawing.Image.FromStream(stream));
-                        bm.Save(country.name, System.Drawing.Imaging.ImageFormat.Jpeg);
-                    }
-                }
-            }           
+            foreach (Country country in countries)
+            {
+                //tasks.Add(Task.Run(() => DownloadSvg(FullPath, country)));
+                tasks.Add(Task.Run(() => DownloadSvg(FullPath, country)));
+            }
+            
+            await Task.WhenAll(tasks);
         }
 
+        private void DownloadSvg(string fullpath, Country country)
+        {
+            WebClient client = new WebClient();
+
+            client.DownloadFile(new Uri(country.flag), $"{fullpath}{country.name}.svg");
+
+            client.Dispose();
+        }
+
+        private async Task ConvertSvgAsync()
+        {
+            DirectoryInfo path = new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent;
+
+            List<Task> tasks = new List<Task>();
 
 
+            string FullPath = path.FullName + @"\FlagsImg\";
 
+            foreach (Country country in paises)
+            {
+                tasks.Add(Task.Run(() => ConvertSvg(FullPath, country)));
+            }
+
+            await Task.WhenAll(tasks);
+        }
+
+        private void ConvertSvg(string fullpath, Country country)
+        {
+            try
+            {
+                var svgdocument = SvgDocument.Open<SvgDocument>($"{fullpath}{country.name}.svg");
+
+                svgdocument.ShapeRendering = SvgShapeRendering.Auto;
+                var bitmap = svgdocument.Draw(100, 100);
+
+                bitmap.Save($"{fullpath}{country.name}.jpg");
+
+                bitmap.Dispose();
+
+                File.Delete($"{fullpath}{country.name}.svg");
+
+                if (File.Exists($"{fullpath}{country.name}.jpg"))
+                {
+                    country.FlagImgPath = $"{fullpath}{country.name}.jpg";
+                }
+                else
+                {
+                    //country.FlagImgPath = $"NOTAVAILABLE.jpg";     ARRANJAR IMAGEM DE DEFAULT SE NÂO EXISTIR
+                }
+
+            }
+            catch (Exception)
+            {
+
+            }
+        }
 
         private void lb_countries_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            foreach (Country country in country_)
-            {
-                if (country.name == lb_countries.SelectedItem.ToString())
-                {
-                    lbl_capital.Content = country.capital;
-                    lbl_region.Content = country.region;
-                    lbl_subregion.Content = country.subregion;
-                    lbl_population.Content = country.population;
 
-                    if (country.capital == "")
-                    {
-                        lbl_capital.Content = "N/A";
-                    }
+            //if (lb_countries.SelectedItem != null)
+            //{
+            //    Country country = (Country)lb_countries.SelectedItem;            
+         
+            //    //lbl_capital.Content = country.capital;
+            //    //lbl_region.Content = country.region;
+            //    //lbl_subregion.Content = country.subregion;
+            //    //lbl_population.Content = country.population;
 
-                    if (country.subregion == "")
-                    {
-                        lbl_subregion.Content = "N/A";
-                    }
-                }
-            }
+            //    //if (country.capital == "")
+            //    //{
+            //    //    lbl_capital.Content = "N/A";
+            //    //}
+
+            //    //if (country.subregion == "")
+            //    //{
+            //    //    lbl_subregion.Content = "N/A";
+            //    //}
+            //}
         }
     }
 }

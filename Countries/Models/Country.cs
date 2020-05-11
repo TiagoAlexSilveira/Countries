@@ -33,7 +33,7 @@ namespace Countries.Modelos
         public List<RegionalBloc> regionalBlocs { get; set; }
         public string cioc { get; set; }
 
-
+        public string FlagImgPath { get; set; }
         //public override string ToString()    //fazer override ou DisplayMember na ComboBox
         //{
         //    return $"{name}";
