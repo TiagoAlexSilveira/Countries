@@ -47,8 +47,10 @@ namespace Countries
             networkService = new NetworkService();
             apiService = new ApiService();
             dialogService = new DialogService();
+            paises = new List<Country>();
             LoadCountries();
             this.DataContext = lb_countries;
+            
         }
 
         private async void LoadCountries()
@@ -57,9 +59,10 @@ namespace Countries
             lb_countries.ItemsSource = paises;
             lb_countries.DisplayMemberPath = "name";
             await SaveFlagASync(paises);
-            await ConvertSvgAsync();
+            //await ConvertSvgAsync();
 
             //MessageBox.Show(paises.Count.ToString());
+            GetContinent();
         }
 
 
@@ -96,83 +99,64 @@ namespace Countries
 
         private void DownloadSvg(string fullpath, Country country)
         {
+            //linha adicionada no xaml
+            //try catch
             WebClient client = new WebClient();
 
             client.DownloadFile(new Uri(country.flag), $"{fullpath}{country.name}.svg");
 
+            country.FlagImgPath = $"{fullpath}{country.name}.svg";
+
             client.Dispose();
-        }
-
-        private async Task ConvertSvgAsync()
-        {
-            DirectoryInfo path = new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent;
-
-            List<Task> tasks = new List<Task>();
-
-
-            string FullPath = path.FullName + @"\FlagsImg\";
-
-            foreach (Country country in paises)
-            {
-                tasks.Add(Task.Run(() => ConvertSvg(FullPath, country)));
-            }
-
-            await Task.WhenAll(tasks);
-        }
-
-        private void ConvertSvg(string fullpath, Country country)
-        {
-            try
-            {
-                var svgdocument = SvgDocument.Open<SvgDocument>($"{fullpath}{country.name}.svg");
-
-                svgdocument.ShapeRendering = SvgShapeRendering.Auto;
-                var bitmap = svgdocument.Draw(100, 100);
-
-                bitmap.Save($"{fullpath}{country.name}.jpg");
-
-                bitmap.Dispose();
-
-                File.Delete($"{fullpath}{country.name}.svg");
-
-                if (File.Exists($"{fullpath}{country.name}.jpg"))
-                {
-                    country.FlagImgPath = $"{fullpath}{country.name}.jpg";
-                }
-                else
-                {
-                    //country.FlagImgPath = $"NOTAVAILABLE.jpg";     ARRANJAR IMAGEM DE DEFAULT SE NÂO EXISTIR
-                }
-
-            }
-            catch (Exception)
-            {
-
-            }
         }
 
         private void lb_countries_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
-            //if (lb_countries.SelectedItem != null)
-            //{
-            //    Country country = (Country)lb_countries.SelectedItem;            
-         
-            //    //lbl_capital.Content = country.capital;
-            //    //lbl_region.Content = country.region;
-            //    //lbl_subregion.Content = country.subregion;
-            //    //lbl_population.Content = country.population;
+            if (lb_countries.SelectedItem != null)
+            {
+                Country country = (Country)lb_countries.SelectedItem;
 
-            //    //if (country.capital == "")
-            //    //{
-            //    //    lbl_capital.Content = "N/A";
-            //    //}
+                lbl_country.Content = country.name;
+                lbl_capital.Content = country.capital;
+                lbl_region.Content = country.region;
+                lbl_subregion.Content = country.subregion;
+                lbl_population.Content = country.population;
+                lbl_gini.Content = country.gini;
 
-            //    //if (country.subregion == "")
-            //    //{
-            //    //    lbl_subregion.Content = "N/A";
-            //    //}
-            //}
+                if (country.capital == "")
+                {
+                    lbl_capital.Content = "N/A";
+                }
+
+                if (country.subregion == "")
+                {
+                    lbl_subregion.Content = "N/A";
+                }
+
+            }
+        }
+
+
+        private void GetContinent()
+        {
+            //vai buscar todos os elementos distintos da propriedade region da lista de paises
+            var continents = paises.Select(c => c.region).Distinct().ToList();
+
+            cb_continents.ItemsSource = continents;
+        }
+
+
+        private void cb_continents_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            List<Country> tempcountry;
+
+            //encontra todos os países que que têm a region igual ao da selecionada na combo box
+            tempcountry = paises.FindAll(c => c.region.Equals(cb_continents.SelectedItem));
+
+            lb_countries.ItemsSource = null;
+            lb_countries.ItemsSource = tempcountry;
+            lb_countries.DisplayMemberPath = "name";
         }
     }
 }
