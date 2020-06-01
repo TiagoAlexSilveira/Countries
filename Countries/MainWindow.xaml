@@ -108,9 +108,14 @@
                 </Grid>
             </TabItem>
             <TabItem Width="100" Height="30" Header="Details" >
-                <StackPanel>
-                    <TextBlock> Another TabItem</TextBlock>
-                </StackPanel>
+                <Grid>
+                    <StackPanel>
+                        <TextBlock> Another TabItem</TextBlock>
+                    </StackPanel>
+                    <StackPanel>
+                        <Label x:Name="lbl_teste">teste </Label>
+                    </StackPanel>
+                </Grid>
             </TabItem>
         </TabControl>
 
