@@ -51,7 +51,7 @@
         <Label x:Name="lbl_population" Grid.Column="2" Grid.Row="2" Content="pp" RenderTransformOrigin="0.5,0.5" Width="175" FontSize="21" Height="41" />-->
         
 
-     
+        
 
         
         <TabControl Grid.Column="2" Grid.Row="2" Margin="15" Grid.ColumnSpan="4" Grid.RowSpan="3">
@@ -107,22 +107,99 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            <TabItem Width="100" Height="30" Header="Details" >
+            <TabItem Width="100" Height="30" Header="Living Costs" >
                 <Grid>
-                    <StackPanel>
-                        <TextBlock> Another TabItem</TextBlock>
-                    </StackPanel>
-                    <StackPanel>
-                        <Label x:Name="lbl_teste">teste </Label>
-                    </StackPanel>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="0.6*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="20"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        
+                        <TextBlock Grid.Row="2" FontSize="20" FontWeight="Bold" Margin="20 0 0 0" VerticalAlignment="Center">Apartment in City Centre</TextBlock>
+                        <TextBlock Grid.Row="3" FontSize="20" FontWeight="Bold" Margin="20 0 0 0" VerticalAlignment="Center">Apartment outside City Centre</TextBlock>
+                        <Label x:Name="lbl_aptcity" Content="Capital" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="2"/>
+                        <Label x:Name="lbl_aptout" Content="Capital" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="3"/>
+                        
+                        
+                        <Border BorderBrush="Black" BorderThickness="2"  Grid.Row="1" Grid.Column="1" >
+                            <TextBlock Grid.Row="1" Grid.Column="1" FontSize="25" FontWeight="UltraBold" Margin="5 0 0 0" VerticalAlignment="Center">Costs (Avg.)</TextBlock>
+                        </Border>
+                        <Border Margin="30 0 30 0" BorderBrush="MediumSeaGreen" BorderThickness="3"  Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Grid.RowSpan="2">
+                            <StackPanel>
+                                <TextBlock TextAlignment="Center" Grid.Row="3" Grid.Column="3" FontSize="25" FontWeight="UltraBold" VerticalAlignment="Center">City</TextBlock>
+                                <Label x:Name="lbl_city" Content="c" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+
+                    <!--<ItemsControl x:Name="ListCost">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Label x:Name="lbl_7" Content="{Binding cost}" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="3" Grid.Row="1"/>
+
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>-->
+
+                    <Grid Grid.Row="2" x:Name="ListCost">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" FontSize="20" FontWeight="Bold" Margin="20 0 0 0" VerticalAlignment="Center">Basic Necessities:</TextBlock>
+                        <TextBlock Grid.Row="1" FontSize="20" FontWeight="Bold" Margin="20 0 0 0" VerticalAlignment="Center">Water(1.5l):</TextBlock>
+                        <TextBlock Grid.Row="2" FontSize="20" FontWeight="Bold" Margin="20 0 0 0" VerticalAlignment="Center">Gasoline:</TextBlock>
+                        <TextBlock Grid.Row="3" FontSize="20"  FontWeight="Bold" Margin="20 0 0 0" VerticalAlignment="Center">Transportation(Pass):</TextBlock>
+                        <TextBlock Grid.Row="4" FontSize="20"  FontWeight="Bold" Margin="20 0 0 0" VerticalAlignment="Center">Internet(Cable/ADSL):</TextBlock>
+                        <TextBlock Grid.Row="5" FontSize="20" FontWeight="Bold" Margin="20 0 0 0" VerticalAlignment="Center">Cigarettes(20 pack):</TextBlock>
+
+                        <Label x:Name="lbl_bn" Content="bs" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="0"/>
+                        <Label x:Name="lbl_water" Content="Capital" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1"/>
+                        <Label x:Name="lbl_gas" Content="Region" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="2"/>
+                        <Label x:Name="lbl_trpt" Content="SubRegion" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="3"/>
+                        <Label x:Name="lbl_net" Content="Population" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="4"/>
+                        <Label x:Name="lbl_cigar" Content="Gini" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="5"/>
+                    </Grid>
                 </Grid>
             </TabItem>
         </TabControl>
 
 
         <StackPanel Grid.Row="5" Grid.Column="2">
-            <TextBox x:Name="tb_status" Height="110" Margin="15" />
-            <ProgressBar x:Name="pg_status" Height="30" Margin="15 0 15 0" UseLayoutRounding="True"/>
+            <TextBox x:Name="tb_status" FontSize="20" Height="110" Margin="15" />
+            <ProgressBar x:Name="pg_status" Height="25" Margin="15 0 15 0" UseLayoutRounding="True"/>
         </StackPanel>
         <!--<Grid Grid.Row="5" Grid.Column="2">
             <Grid.ColumnDefinitions>

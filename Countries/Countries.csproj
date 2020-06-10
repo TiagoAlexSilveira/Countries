@@ -113,6 +113,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Cost.cs" />
+    <Compile Include="Models\LivingCost.cs" />
+    <Compile Include="Models\Range.cs" />
     <Compile Include="Models\Rate.cs" />
     <Compile Include="Models\Response.cs" />
     <Compile Include="Services\ApiService.cs" />

@@ -92,5 +92,44 @@ namespace Countries.Services
             }
         }
 
+        public async Task<Response> GetCosts(string urlBase, string controller) //método que tem como tarefa devolver um objecto do tipo Response (a classe que criámos)
+        {
+            try
+            {
+                var client = new HttpClient();      //criar http para fazer ligação externa
+
+                client.BaseAddress = new Uri(urlBase);  //especificar onde está o endereço base da API
+
+                var response = await client.GetAsync(controller);    //vai buscar o controlador da API
+
+                var result = await response.Content.ReadAsStringAsync();  //guarda os resultados no formato de string para o objecto result
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new Response
+                    {
+                        IsSucess = false,
+                        Message = result,
+                    };
+                }
+
+                var costs = JsonConvert.DeserializeObject<LivingCost>(result); //tentar meter isto para objecto em vez de lista
+
+                return new Response
+                {
+                    IsSucess = true,
+                    Result = costs
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    IsSucess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
     }
 }   
